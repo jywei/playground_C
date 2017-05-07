@@ -1,41 +1,24 @@
-#
-# Makefile
-#
-# Computer Science 50
-# Problem Set 5
-#
+TARGET = prog
+LIBS = -lm
+CC = gcc
+CFLAGS = -g -Wall
 
+.PHONY: default all clean
 
-# compiler to use
-CC = clang
+default: $(TARGET)
+all: default
 
-# flags to pass compiler
-CFLAGS = -ggdb3 -O0 -Qunused-arguments -std=c99 -Wall -Werror
+OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
+HEADERS = $(wildcard *.h)
 
-# name for executable
-EXE = speller
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# space-separated list of header files
-HDRS = dictionary.h
+.PRECIOUS: $(TARGET) $(OBJECTS)
 
-# space-separated list of libraries, if any,
-# each of which should be prefixed with -l
-LIBS =
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
 
-# space-separated list of source files
-SRCS = speller.c dictionary.c
-
-# automatically generated list of object files
-OBJS = $(SRCS:.c=.o)
-
-
-# default target
-$(EXE): $(OBJS) $(HDRS) Makefile
-	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LIBS)
-
-# dependencies
-$(OBJS): $(HDRS) Makefile
-
-# housekeeping
 clean:
-	rm -f core $(EXE) *.o
+	-rm -f *.o
+	-rm -f $(TARGET)
