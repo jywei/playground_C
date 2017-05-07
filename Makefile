@@ -1,24 +1,24 @@
-TARGET = prog
-LIBS = -lm
-CC = gcc
-CFLAGS = -g -Wall
+CC ?= gcc
+CFLAGS_common ?= -g -Wall -std=gnu99
 
-.PHONY: default all clean
+EXEC = matrix
+SRCS = main.c
 
-default: $(TARGET)
-all: default
+GIT_HOOKS := .git/hooks/applied
 
-OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
-HEADERS = $(wildcard *.h)
+$(GIT_HOOKS):
+	@scripts/install-git-hooks
+	@echo
 
-%.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+.PHONY: all
+all: $(GIT_HOOKS) $(EXEC)
 
-.PRECIOUS: $(TARGET) $(OBJECTS)
+matrix: $(SRCS) matrix.c matrix.h
+	$(CC) $(CFLAGS_common) \
+		-o $@ \
+		$(SRCS) $@.c
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
 
+.PHONY: clean
 clean:
-	-rm -f *.o
-	-rm -f $(TARGET)
+	rm -rf $(EXEC)
