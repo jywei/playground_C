@@ -22,7 +22,7 @@ void fill_fibonacci_numbers(int* fib, int len)
     int i;
     for (i = 2; i < len; i++)
     {
-        fib[i] = fib[i-1] + fib[i-2];
+        fib[i] = fib[i - 1] + fib[i - 2];
     }
 }
 
